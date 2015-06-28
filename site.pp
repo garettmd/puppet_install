@@ -37,5 +37,3 @@ class stash {
 		creates => "/tmp/atlassian-stash-3.10.2-x64.bin",
 	}
 }
-
-https://www.atlassian.com/software/stash/downloads/binary/atlassian-stash-3.10.2-x64.bin
