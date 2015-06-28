@@ -9,11 +9,12 @@ package { "git":
 }
 
 class stash {
-	package { "stash":
-		ensure => present,
+	exec { "stash_install":
+		command => "/tmp/atlassian-stash-3.10.2-x64.bin",
 		provider => "dpkg",
-		require => [Package["default-jre"], Package["git"], exec["get_stash_file"]],
-		source => "/tmp/atlassian-stash-3.10.2-x64.bin",
+		onlyif => [ "ls /tmp/atlassian-stash-3.10.2-x64.bin",
+					"dpkg -s git",
+					"dpkg -s default-jre",],
 	}
 
 	file { "/home/stash":
