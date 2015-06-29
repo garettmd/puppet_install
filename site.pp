@@ -24,6 +24,7 @@ class stash {
 		user => "stash",
 		require => [Package["default-jre"], 
 					Package["git"], 
+					Pacakge["perl"],
 					Exec["get_stash_file"], 
 					Tidy["clean_old_install"]],
 	}
@@ -66,5 +67,5 @@ class stash {
 	tidy { "clean_old_install": 
 		path => "$stash_install",
 		recurse => true,
-}
+	}
 }
