@@ -11,13 +11,13 @@ package { "git":
 class stash {
 	exec { "stash_install":
 		command => "/tmp/atlassian-stash-3.10.2-x64.bin",
-		provider => "dpkg",
+		path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 		onlyif => [ "ls /tmp/atlassian-stash-3.10.2-x64.bin",
 					"dpkg -s git",
 					"dpkg -s default-jre",],
 	}
 
-	file { "/home/stash":
+	file { "/stash":
 		ensure => directory,
 		owner => "stash",
 		mode => "0660",
@@ -26,7 +26,7 @@ class stash {
 
 	user { "stash":
 		name => "stash",
-		home => "/home/stash",
+		home => "/stash",
 	}
 
 	exec { "get_stash_file":
@@ -34,7 +34,7 @@ class stash {
 		cwd => "/tmp",
 		user => "stash",
 		require => User["stash"],
-		environment => "STASH_HOME=/vagrant/stash-home",
+		environment => "STASH_HOME=/stash",
 		creates => "/tmp/atlassian-stash-3.10.2-x64.bin",
 	}
 }
