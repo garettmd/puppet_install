@@ -1,3 +1,7 @@
+$stash_home = "/home/stash"
+$stash_install = "/stash"
+$path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 include stash
 
 package { "default-jre":
@@ -10,9 +14,11 @@ package { "git":
 
 class stash {
 	exec { "stash_install":
-		command => "/tmp/atlassian-stash-3.10.2-x64.bin",
-		path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-		onlyif => [ "ls /tmp/atlassian-stash-3.10.2-x64.bin",
+		command => "tar zx /tmp/atlassian-stash-3.10.2.tar.gz",
+		path => $path,
+		cwd => $stash_install,
+		user => "stash",
+		onlyif => [ "ls /tmp/atlassian-stash-3.10.2.tar.gz",
 					"dpkg -s git",
 					"dpkg -s default-jre",],
 	}
@@ -26,15 +32,23 @@ class stash {
 
 	user { "stash":
 		name => "stash",
-		home => "/stash",
+		home => $stash_home,
 	}
 
 	exec { "get_stash_file":
-		command => "wget https://www.atlassian.com/software/stash/downloads/binary/atlassian-stash-3.10.2-x64.bin",
+		command => "wget https://www.atlassian.com/software/stash/downloads/binary/atlassian-stash-3.10.2.tar.gz",
 		cwd => "/tmp",
+		path => $path,
 		user => "stash",
 		require => User["stash"],
-		environment => "STASH_HOME=/stash",
-		creates => "/tmp/atlassian-stash-3.10.2-x64.bin",
+		creates => "/tmp/atlassian-stash-3.10.2.tar.gz",
+	}
+
+	exec { "start_stash":
+		command => "$stash_install/atlassian-stash-3.10.2/bin/start_stash.sh",
+		environment => "STASH_HOME=$stash_home",
+		user => "stash",
+		path => $path,
+		cwd => "$stash_install/atlassian-stash-3.10.2/bin",
 	}
 }
